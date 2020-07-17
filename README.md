@@ -1,1 +1,1 @@
-# typescript-base
+# typescript-isolating-the-domain

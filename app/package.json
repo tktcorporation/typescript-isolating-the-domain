@@ -1,5 +1,5 @@
 {
-  "name": "typescript-base",
+  "name": "typescript-isolating-the-domain",
   "version": "0.0.1",
   "description": "",
   "author": "tktcorporation",
@@ -7,7 +7,6 @@
   "engines": {
     "npm": "use yarn instead of npm."
   },
-  "license": "MIT",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
