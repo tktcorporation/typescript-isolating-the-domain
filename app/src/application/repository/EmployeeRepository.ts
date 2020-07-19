@@ -3,14 +3,15 @@ import { Employee } from 'src/domain/model/employee/Employee';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
 import { Name } from 'src/domain/model/employee/Name';
+import { ContractingEmployees } from 'src/domain/model/employee/ContractingEmployees';
 
 /**
  * 従業員リポジトリ
  */
 export interface EmployeeRepository {
-    choose(employeeNumber: EmployeeNumber): Promise<Employee>;
+    choose(employeeNumber: EmployeeNumber): Promise<Employee | undefined>;
 
-    // findUnderContracts(): Promise<ContractingEmployees>;
+    findUnderContracts(): Promise<ContractingEmployees>;
 
     registerName(employeeNumber: EmployeeNumber, name: Name): Promise<void>;
 

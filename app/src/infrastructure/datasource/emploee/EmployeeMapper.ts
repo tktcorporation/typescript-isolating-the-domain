@@ -5,7 +5,9 @@ import { Name } from 'src/domain/model/employee/Name';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
 
 export interface EmployeeMapper {
-    selectByEmployeeNumber(employeeNumber: EmployeeNumber): Promise<Employee>;
+    selectByEmployeeNumber(
+        employeeNumber: EmployeeNumber,
+    ): Promise<Employee | undefined>;
 
     selectContracts(): Promise<Array<Employee>>;
 
