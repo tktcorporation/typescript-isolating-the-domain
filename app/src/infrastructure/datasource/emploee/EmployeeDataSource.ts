@@ -9,34 +9,37 @@ import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 export class EmployeeDataSource implements EmployeeRepository {
     private mapper: EmployeeMapper;
 
-    choose(employeeNumber: EmployeeNumber): Employee {
+    choose = async (employeeNumber: EmployeeNumber): Promise<Employee> => {
         return this.mapper.selectByEmployeeNumber(employeeNumber);
-    }
+    };
 
     // findUnderContracts(): ContractingEmployees {
     //     return new ContractingEmployees(this.mapper.selectContracts());
     // }
 
-    registerNew(): EmployeeNumber {
+    registerNew = async (): Promise<EmployeeNumber> => {
         const employeeNumber: EmployeeNumber = new EmployeeNumber(
-            this.mapper.newEmployeeNumber(),
+            await this.mapper.newEmployeeNumber(),
         );
         this.mapper.insertEmployee(employeeNumber);
         return employeeNumber;
-    }
+    };
 
-    registerName(employeeNumber: EmployeeNumber, name: Name): void {
-        const nameId: number = this.mapper.newEmployeeNameIdentifier();
+    registerName = async (
+        employeeNumber: EmployeeNumber,
+        name: Name,
+    ): Promise<void> => {
+        const nameId: number = await this.mapper.newEmployeeNameIdentifier();
         this.mapper.insertEmployeeNameHistory(nameId, employeeNumber, name);
         this.mapper.deleteEmployeeName(employeeNumber);
         this.mapper.insertEmployeeName(employeeNumber, nameId, name);
-    }
+    };
 
-    registerMailAddress(
+    registerMailAddress = async (
         employeeNumber: EmployeeNumber,
         mailAddress: MailAddress,
-    ): void {
-        const mailAddressId: number = this.mapper.newEmployeeMailAddressIdentifier();
+    ): Promise<void> => {
+        const mailAddressId: number = await this.mapper.newEmployeeMailAddressIdentifier();
         this.mapper.insertEmployeeMailAddressHistory(
             mailAddressId,
             employeeNumber,
@@ -48,13 +51,13 @@ export class EmployeeDataSource implements EmployeeRepository {
             mailAddressId,
             mailAddress,
         );
-    }
+    };
 
-    registerPhoneNumber(
+    registerPhoneNumber = async (
         employeeNumber: EmployeeNumber,
         phoneNumber: PhoneNumber,
-    ): void {
-        const phoneNumberId: number = this.mapper.newEmployeePhoneNumberIdentifier();
+    ): Promise<void> => {
+        const phoneNumberId: number = await this.mapper.newEmployeePhoneNumberIdentifier();
         this.mapper.insertEmployeePhoneNumberHistory(
             phoneNumberId,
             employeeNumber,
@@ -66,16 +69,18 @@ export class EmployeeDataSource implements EmployeeRepository {
             phoneNumberId,
             phoneNumber,
         );
-    }
+    };
 
-    registerInspireContract(employeeNumber: EmployeeNumber): void {
+    registerInspireContract = async (
+        employeeNumber: EmployeeNumber,
+    ): Promise<void> => {
         this.mapper.insertInspireContract(employeeNumber);
-    }
+    };
 
-    registerExpireContract(employee: Employee): void {
+    registerExpireContract = async (employee: Employee): Promise<void> => {
         this.mapper.deleteInspireContract(employee.employeeNumber());
         this.mapper.insertExpireContract(employee.employeeNumber());
-    }
+    };
 
     constructor(mapper: EmployeeMapper) {
         this.mapper = mapper;
