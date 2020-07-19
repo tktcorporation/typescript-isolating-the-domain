@@ -5,6 +5,7 @@ import { Employee } from 'src/domain/model/employee/Employee';
 import { Name } from 'src/domain/model/employee/Name';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
+import { ContractingEmployees } from 'src/domain/model/employee/ContractingEmployees';
 
 export class EmployeeDataSource implements EmployeeRepository {
     private mapper: EmployeeMapper;
@@ -13,9 +14,9 @@ export class EmployeeDataSource implements EmployeeRepository {
         return this.mapper.selectByEmployeeNumber(employeeNumber);
     };
 
-    // findUnderContracts(): ContractingEmployees {
-    //     return new ContractingEmployees(this.mapper.selectContracts());
-    // }
+    findUnderContracts = async (): Promise<ContractingEmployees> => {
+        return new ContractingEmployees(await this.mapper.selectContracts());
+    };
 
     registerNew = async (): Promise<EmployeeNumber> => {
         const employeeNumber: EmployeeNumber = new EmployeeNumber(
