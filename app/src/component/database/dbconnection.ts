@@ -4,20 +4,30 @@ import {
     EntityManager,
     getConnection,
     ConnectionOptions,
+    QueryRunner,
 } from 'typeorm';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class DBConnection {
     manager = () => DBConnection.getManager();
     connection = () => DBConnection.get();
+
+    static startTransaction = async (): Promise<void> => {
+        if (DBConnection._queryRunner)
+            return DBConnection._queryRunner.startTransaction();
+        return (await DBConnection.getQueryRunner()).startTransaction();
+    };
+    static getQueryRunner = async (): Promise<QueryRunner> => {
+        if (DBConnection._queryRunner) return DBConnection._queryRunner;
+        return DBConnection.createQueryRunner();
+    };
 
     static getManager = async (): Promise<EntityManager> => {
         if (DBConnection._manager) return DBConnection._manager;
         return DBConnection.createManager();
     };
-    static createManager = (): Promise<EntityManager> =>
-        DBConnection.get().then((con) => con.manager);
+
     static get = async (): Promise<Connection> => {
         if (DBConnection._connection && DBConnection._connection.isConnected)
             return DBConnection._connection;
@@ -45,6 +55,8 @@ export class DBConnection {
 
     private static _connection?: Connection;
     private static _manager?: EntityManager;
+    private static _queryRunner?: QueryRunner;
+
     private static create = async (): Promise<Connection> => {
         DBConnection._connection = await createConnection(
             DBConnection.options,
@@ -53,6 +65,16 @@ export class DBConnection {
             await DBConnection._connection.connect();
         // await DBConnection.setSearchPath();
         return DBConnection._connection;
+    };
+    private static createQueryRunner = async (): Promise<QueryRunner> => {
+        DBConnection._queryRunner = (
+            await DBConnection.get()
+        ).createQueryRunner();
+        return DBConnection._queryRunner;
+    };
+    private static createManager = async (): Promise<EntityManager> => {
+        DBConnection._manager = (await DBConnection.getQueryRunner()).manager;
+        return DBConnection._manager;
     };
     private static getSearchPathQuery = () =>
         `SET search_path TO '${process.env.SCHEMA_NAME}';`;
