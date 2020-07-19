@@ -8,7 +8,7 @@ export class Name {
 
     @IsNotEmpty()
     @MaxLength(Name.字数制限)
-    _value: string;
+    private _value: string;
 
     constructor();
     constructor(name: string);
