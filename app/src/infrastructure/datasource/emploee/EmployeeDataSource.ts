@@ -6,9 +6,11 @@ import { Name } from 'src/domain/model/employee/Name';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { ContractingEmployees } from 'src/domain/model/employee/ContractingEmployees';
+import { injectable, inject } from 'tsyringe';
 
+@injectable()
 export class EmployeeDataSource implements EmployeeRepository {
-    private mapper: EmployeeMapper;
+    constructor(@inject('EmployeeMapper') private mapper: EmployeeMapper) {}
 
     choose = async (employeeNumber: EmployeeNumber): Promise<Employee> => {
         return this.mapper.selectByEmployeeNumber(employeeNumber);
@@ -82,8 +84,4 @@ export class EmployeeDataSource implements EmployeeRepository {
         this.mapper.deleteInspireContract(employee.employeeNumber());
         this.mapper.insertExpireContract(employee.employeeNumber());
     };
-
-    constructor(mapper: EmployeeMapper) {
-        this.mapper = mapper;
-    }
 }
