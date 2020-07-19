@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:create": "ts-node $(npm bin)/typeorm migration:create -f ormconf",
+    "migration:run": "ts-node $(npm bin)/typeorm migration:run -f ormconf"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -37,9 +39,11 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "class-validator": "^0.12.2"
+    "class-validator": "^0.12.2",
+    "typeorm": "^0.2.25"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.5"
+    "@types/jest": "^26.0.5",
+    "@types/node": "^14.0.23"
   }
 }
