@@ -4,12 +4,15 @@ import { Employee } from 'src/domain/model/employee/Employee';
 import { Name } from 'src/domain/model/employee/Name';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
-import { injectable } from 'tsyringe';
-import { DBConnection } from 'src/component/database/dbconnection';
+import { injectable, inject } from 'tsyringe';
+import { ConnectionManager } from '../ConnectionManager';
 
 @injectable()
 export class EmployeeDao implements EmployeeMapper {
-    constructor(private connectionManager: DBConnection) {}
+    constructor(
+        @inject('ConnectionManager')
+        private connectionManager: ConnectionManager,
+    ) {}
 
     private static selectEmployee: string = `
         SELECT
