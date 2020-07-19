@@ -5,65 +5,65 @@ import { Name } from 'src/domain/model/employee/Name';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
 
 export interface EmployeeMapper {
-    selectByEmployeeNumber(employeeNumber: EmployeeNumber): Employee;
+    selectByEmployeeNumber(employeeNumber: EmployeeNumber): Promise<Employee>;
 
-    selectContracts(): Array<Employee>;
+    selectContracts(): Promise<Array<Employee>>;
 
-    insertEmployee(employeeNumber: EmployeeNumber): void;
+    insertEmployee(employeeNumber: EmployeeNumber): Promise<void>;
 
-    deleteEmployeeName(employeeNumber: EmployeeNumber): void;
+    deleteEmployeeName(employeeNumber: EmployeeNumber): Promise<void>;
 
     insertEmployeeNameHistory(
         id: number,
         employeeNumber: EmployeeNumber,
         name: Name,
-    ): void;
+    ): Promise<void>;
 
     insertEmployeeName(
         employeeNumber: EmployeeNumber,
         nameId: number,
         employeeName: Name,
-    ): void;
+    ): Promise<void>;
 
-    deleteEmployeePhoneNumber(employeeNumber: EmployeeNumber): void;
+    deleteEmployeePhoneNumber(employeeNumber: EmployeeNumber): Promise<void>;
 
     insertEmployeePhoneNumberHistory(
         id: number,
         employeeNumber: EmployeeNumber,
         phoneNumber: PhoneNumber,
-    ): void;
+    ): Promise<void>;
 
     insertEmployeePhoneNumber(
         employeeNumber: EmployeeNumber,
         phoneId: number,
         phoneNumber: PhoneNumber,
-    ): void;
+    ): Promise<void>;
 
-    deleteEmployeeMailAddress(employeeNumber: EmployeeNumber): void;
+    deleteEmployeeMailAddress(employeeNumber: EmployeeNumber): Promise<void>;
 
     insertEmployeeMailAddressHistory(
         id: number,
         employeeNumber: EmployeeNumber,
         mailAddress: MailAddress,
-    ): void;
+    ): Promise<void>;
 
     insertEmployeeMailAddress(
         employeeNumber: EmployeeNumber,
         mailAddressId: number,
         mailAddress: MailAddress,
-    ): void;
+    ): Promise<void>;
 
-    insertInspireContract(employeeNumber: EmployeeNumber): void;
+    insertInspireContract(employeeNumber: EmployeeNumber): Promise<void>;
 
-    deleteInspireContract(employeeNumber: EmployeeNumber): void;
+    deleteInspireContract(employeeNumber: EmployeeNumber): Promise<void>;
 
-    insertExpireContract(employeeNumber: EmployeeNumber): void;
+    insertExpireContract(employeeNumber: EmployeeNumber): Promise<void>;
 
-    newEmployeeNumber(): number;
+    newEmployeeNumber(): Promise<number>;
 
-    newEmployeeNameIdentifier(): number;
+    newEmployeeNameIdentifier(): Promise<number>;
 
-    newEmployeePhoneNumberIdentifier(): number;
+    newEmployeePhoneNumberIdentifier(): Promise<number>;
 
-    newEmployeeMailAddressIdentifier(): number;
+    newEmployeeMailAddressIdentifier(): Promise<number>;
 }
