@@ -8,25 +8,25 @@ import { Name } from 'src/domain/model/employee/Name';
  * 従業員リポジトリ
  */
 export interface EmployeeRepository {
-    choose(employeeNumber: EmployeeNumber): Employee;
+    choose(employeeNumber: EmployeeNumber): Promise<Employee>;
 
-    // findUnderContracts(): ContractingEmployees;
+    // findUnderContracts(): Promise<ContractingEmployees>;
 
-    registerName(employeeNumber: EmployeeNumber, name: Name): void;
+    registerName(employeeNumber: EmployeeNumber, name: Name): Promise<void>;
 
     registerMailAddress(
         employeeNumber: EmployeeNumber,
         mailAddress: MailAddress,
-    ): void;
+    ): Promise<void>;
 
     registerPhoneNumber(
         employeeNumber: EmployeeNumber,
         phoneNumber: PhoneNumber,
-    ): void;
+    ): Promise<void>;
 
-    registerInspireContract(employeeNumber: EmployeeNumber): void;
+    registerInspireContract(employeeNumber: EmployeeNumber): Promise<void>;
 
-    registerExpireContract(employee: Employee): void;
+    registerExpireContract(employee: Employee): Promise<void>;
 
-    registerNew(): EmployeeNumber;
+    registerNew(): Promise<EmployeeNumber>;
 }
