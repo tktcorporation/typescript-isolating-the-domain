@@ -38,7 +38,7 @@ export class createEmployee1595161973692 implements MigrationInterface {
                 "CREATED_AT" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                     ,FOREIGN KEY ("EMPLOYEE_ID") REFERENCES "EMPLOYEES"("EMPLOYEE_ID")
             );
-            CREATE SEQUENCE EMPLOYEE_PHONE_NUMBER_ID;
+            CREATE SEQUENCE "EMPLOYEE_PHONE_NUMBER_ID";
         `);
         await queryRunner.query(`
             CREATE TABLE "EMPLOYEE_PHONE_NUMBERS" (
