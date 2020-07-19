@@ -35,5 +35,11 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "dependencies": {
+    "class-validator": "^0.12.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.5"
   }
 }
