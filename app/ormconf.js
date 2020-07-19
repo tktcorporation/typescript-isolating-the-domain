@@ -7,8 +7,8 @@ module.exports = {
     database: process.env.DB_DATABASE_NAME,
     synchronize: false,
     logging: process.env.NODE_ENV === 'production' ? ['error'] : 'all',
-    migrations: ['src/migration/**/*.ts'],
+    migrations: ['./migration/**/*.ts'],
     cli: {
-        migrationsDir: 'src/migration',
+        migrationsDir: './migration',
     },
 };
