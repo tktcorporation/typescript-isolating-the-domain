@@ -26,7 +26,7 @@ export class EmployeeDao implements EmployeeMapper {
 
     selectByEmployeeNumber = async (
         employeeNumber: EmployeeNumber,
-    ): Promise<Employee> => {
+    ): Promise<Employee | undefined> => {
         const result: [
             {
                 employeeNumberValue: number;
@@ -40,8 +40,7 @@ export class EmployeeDao implements EmployeeMapper {
             `${EmployeeDao.selectEmployee} WHERE "EMPLOYEE"."EMPLOYEE_ID" = $1;`,
             [employeeNumber.value()],
         );
-        console.log(result);
-        console.log(result[0]);
+        if (result[0] === undefined) return;
         return new Employee(
             ((params: {
                 employeeNumberValue: number;
