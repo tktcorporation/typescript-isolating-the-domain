@@ -1,28 +1,28 @@
 import { EmployeeMapper } from './EmployeeMapper';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
-import { EntityManager } from 'typeorm';
 import { Employee } from 'src/domain/model/employee/Employee';
 import { Name } from 'src/domain/model/employee/Name';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
+import { injectable } from 'tsyringe';
+import { DBConnection } from 'src/component/database/dbconnection';
 
+@injectable()
 export class EmployeeDao implements EmployeeMapper {
-    private manager: EntityManager;
+    constructor(private connectionManager: DBConnection) {}
+
     private static selectEmployee: string = `
         SELECT
-            "EMPLOYEE_ID" AS "employeeNumberValue",
+            "EMPLOYEE"."EMPLOYEE_ID" AS "employeeNumberValue",
             "EMPLOYEE_NAME"."EMPLOYEE_NAME" AS "nameValue",
             "EMPLOYEE_MAIL_ADDRESS"."MAIL_ADDRESS" AS "mailAddressValue",
             "EMPLOYEE_PHONE_NUMBER"."PHONE_NUMBER" AS "phoneNumberValue"
         FROM
             "EMPLOYEES" AS "EMPLOYEE"
-            INNER JOIN "EMPLOYEE_NAMES" AS "EMPLOYEE_NAME" ON ("EMPLOYEE_ID" = "EMPLOYEE_NAME"."EMPLOYEE_ID")
-            INNER JOIN "EMPLOYEE_PHONE_NUMBERS" AS "EMPLOYEE_PHONE_NUMBER" ON ("EMPLOYEE_ID" = "EMPLOYEE_PHONE_NUMBER"."EMPLOYEE_ID")
-            INNER JOIN "EMPLOYEE_MAIL_ADDRESSES" AS "EMPLOYEE_MAIL_ADDRESS" ON ("EMPLOYEE_ID" = "EMPLOYEE_MAIL_ADDRESS"."EMPLOYEE_ID")
-            INNER JOIN "UNDER_CONTRACTS" AS "UNDER_CONTRACT" ON ("EMPLOYEE_ID" = "UNDER_CONTRACT"."EMPLOYEE_ID")`;
-    constructor(manager: EntityManager) {
-        this.manager = manager;
-    }
+            INNER JOIN "EMPLOYEE_NAMES" AS "EMPLOYEE_NAME" ON ("EMPLOYEE"."EMPLOYEE_ID" = "EMPLOYEE_NAME"."EMPLOYEE_ID")
+            INNER JOIN "EMPLOYEE_PHONE_NUMBERS" AS "EMPLOYEE_PHONE_NUMBER" ON ("EMPLOYEE"."EMPLOYEE_ID" = "EMPLOYEE_PHONE_NUMBER"."EMPLOYEE_ID")
+            INNER JOIN "EMPLOYEE_MAIL_ADDRESSES" AS "EMPLOYEE_MAIL_ADDRESS" ON ("EMPLOYEE"."EMPLOYEE_ID" = "EMPLOYEE_MAIL_ADDRESS"."EMPLOYEE_ID")
+            INNER JOIN "INSPIRED_CONTRACTS" AS "UNDER_CONTRACT" ON ("EMPLOYEE"."EMPLOYEE_ID" = "UNDER_CONTRACT"."EMPLOYEE_ID")`;
 
     selectByEmployeeNumber = async (
         employeeNumber: EmployeeNumber,
@@ -34,10 +34,14 @@ export class EmployeeDao implements EmployeeMapper {
                 mailAddressValue: string;
                 phoneNumberValue: string;
             },
-        ] = await this.manager.query(
+        ] = await (
+            await this.connectionManager.manager()
+        ).query(
             `${EmployeeDao.selectEmployee} WHERE "EMPLOYEE"."EMPLOYEE_ID" = $1;`,
-            [employeeNumber],
+            [employeeNumber.value()],
         );
+        console.log(result);
+        console.log(result[0]);
         return new Employee(
             ((params: {
                 employeeNumberValue: number;
@@ -59,7 +63,7 @@ export class EmployeeDao implements EmployeeMapper {
             nameValue: string;
             mailAddressValue: string;
             phoneNumberValue: string;
-        }> = await this.manager.query(
+        }> = await (await this.connectionManager.manager()).query(
             `${EmployeeDao.selectEmployee} ORDER BY "EMPLOYEE"."EMPLOYEE_ID";`,
         );
         return result.map(
@@ -76,19 +80,21 @@ export class EmployeeDao implements EmployeeMapper {
     };
 
     insertEmployee = async (employeeNumber: EmployeeNumber): Promise<void> => {
-        await this.manager.query(
-            `INSERT INTO "EMPLOYEES" ("EMPLOYEE_ID") VALUES ($1);`,
-            [employeeNumber],
-        );
+        await (
+            await this.connectionManager.manager()
+        ).query(`INSERT INTO "EMPLOYEES" ("EMPLOYEE_ID") VALUES ($1);`, [
+            employeeNumber.value(),
+        ]);
     };
 
     deleteEmployeeName = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        await this.manager.query(
-            `DELETE FROM "EMPLOYEE_NAME" WHERE "EMPLOYEE_ID" = $1`,
-            [employeeNumber],
-        );
+        await (
+            await this.connectionManager.manager()
+        ).query(`DELETE FROM "EMPLOYEE_NAME" WHERE "EMPLOYEE_ID" = $1`, [
+            employeeNumber.value(),
+        ]);
     };
 
     insertEmployeeNameHistory = async (
@@ -96,11 +102,11 @@ export class EmployeeDao implements EmployeeMapper {
         employeeNumber: EmployeeNumber,
         name: Name,
     ): Promise<void> => {
-        await this.manager.query(
+        await (await this.connectionManager.manager()).query(
             `
             INSERT INTO "EMPLOYEE_NAME_HISTORIES" ("EMPLOYEE_NAME_ID", "EMPLOYEE_ID", "EMPLOYEE_NAME")
             VALUES ($1, $2, $3);`,
-            [id, employeeNumber, name],
+            [id, employeeNumber.value(), name.toString()],
         );
     };
 
@@ -109,20 +115,22 @@ export class EmployeeDao implements EmployeeMapper {
         nameId: number,
         employeeName: Name,
     ): Promise<void> => {
-        await this.manager.query(
+        await (await this.connectionManager.manager()).query(
             `
             INSERT INTO "EMPLOYEE_NAME_HISTORIES" ("EMPLOYEE_ID", "EMPLOYEE_NAME_ID", "EMPLOYEE_NAME")
             VALUES ($1, $2, $3);`,
-            [employeeNumber, nameId, employeeName],
+            [employeeNumber.value(), nameId, employeeName.toString()],
         );
     };
 
     deleteEmployeePhoneNumber = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        await this.manager.query(
+        await (
+            await this.connectionManager.manager()
+        ).query(
             `DELETE FROM "EMPLOYEE_PHONE_NUMBER" WHERE "EMPLOYEE_ID" = $1`,
-            [employeeNumber],
+            [employeeNumber.value()],
         );
     };
 
@@ -131,11 +139,11 @@ export class EmployeeDao implements EmployeeMapper {
         employeeNumber: EmployeeNumber,
         phoneNumber: PhoneNumber,
     ): Promise<void> => {
-        await this.manager.query(
+        await (await this.connectionManager.manager()).query(
             `
             INSERT INTO "EMPLOYEE_PHONE_NUMBER_HISTORIES" ("EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER")
             VALUES ($1, $2, $3);`,
-            [id, employeeNumber, phoneNumber],
+            [id, employeeNumber.value(), phoneNumber.toString()],
         );
     };
 
@@ -144,18 +152,22 @@ export class EmployeeDao implements EmployeeMapper {
         phoneId: number,
         phoneNumber: PhoneNumber,
     ): Promise<void> => {
-        await this.manager.query(
+        await (
+            await this.connectionManager.manager()
+        ).query(
             `INSERT INTO "EMPLOYEE_PHONE_NUMBERS" ("EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_PHONE_NUMBER")`,
-            [employeeNumber, phoneId, phoneNumber],
+            [employeeNumber.value(), phoneId, phoneNumber.toString()],
         );
     };
 
     deleteEmployeeMailAddress = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        await this.manager.query(
+        await (
+            await this.connectionManager.manager()
+        ).query(
             `DELETE FROM "EMPLOYEE_MAIL_ADDRESS" WHERE "EMPLOYEE_ID" = $1`,
-            [employeeNumber],
+            [employeeNumber.value()],
         );
     };
 
@@ -164,11 +176,11 @@ export class EmployeeDao implements EmployeeMapper {
         employeeNumber: EmployeeNumber,
         mailAddress: MailAddress,
     ): Promise<void> => {
-        await this.manager.query(
+        await (await this.connectionManager.manager()).query(
             `
             INSERT INTO "EMPLOYEE_MAIL_ADDRESS_HISTORIES" ("EMPLOYEE_MAIL_ADDRESS_ID", "EMPLOYEE_ID", "EMPLOYEE_MAIL_ADDRESS")
             VALUES ($1, $2, $3);`,
-            [id, employeeNumber, mailAddress],
+            [id, employeeNumber.value, mailAddress.toString()],
         );
     };
 
@@ -177,66 +189,70 @@ export class EmployeeDao implements EmployeeMapper {
         mailAddressId: number,
         mailAddress: MailAddress,
     ): Promise<void> => {
-        await this.manager.query(
+        await (await this.connectionManager.manager()).query(
             `
             INSERT INTO "EMPLOYEE_MAIL_ADDRESSES" ("EMPLOYEE_ID", "EMPLOYEE_MAIL_ADDRESS_ID", "MAIL_ADDRESS")
             VALUES ($1, $2, $3);`,
-            [employeeNumber, mailAddressId, mailAddress],
+            [employeeNumber.value, mailAddressId, mailAddress.toString()],
         );
     };
 
     insertInspireContract = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        await this.manager.query(
+        await (await this.connectionManager.manager()).query(
             `
             INSERT INTO "INSPIRED_CONTRACTS" ("EMPLOYEE_ID")
             VALUES ($1);`,
-            [employeeNumber],
+            [employeeNumber.value],
         );
     };
 
     deleteInspireContract = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        await this.manager.query(
-            `DELETE FROM "INSPIRED_CONTRACT" WHERE "EMPLOYEE_ID" = $1`,
-            [employeeNumber],
-        );
+        await (
+            await this.connectionManager.manager()
+        ).query(`DELETE FROM "INSPIRED_CONTRACT" WHERE "EMPLOYEE_ID" = $1`, [
+            employeeNumber.value,
+        ]);
     };
 
     insertExpireContract = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        await this.manager.query(
-            `DELETE FROM "EXPIRED_CONTRACT" WHERE "EMPLOYEE_ID" = $1`,
-            [employeeNumber],
-        );
+        await (
+            await this.connectionManager.manager()
+        ).query(`DELETE FROM "EXPIRED_CONTRACT" WHERE "EMPLOYEE_ID" = $1`, [
+            employeeNumber.value,
+        ]);
     };
 
     newEmployeeNumber = async (): Promise<number> => {
-        const result = await this.manager.query(
-            `select nextval("EMPLOYEE_ID")`,
-        );
-        return result[0];
+        const result: [{ nextval: string }] = await (
+            await this.connectionManager.manager()
+        ).query(`select nextval('"EMPLOYEE_ID"')`);
+        const val = result[0].nextval;
+        const num = Number.parseInt(val);
+        return num;
     };
 
     newEmployeeNameIdentifier = async (): Promise<number> => {
-        const result = await this.manager.query(
+        const result = await (await this.connectionManager.manager()).query(
             `select nextval("EMPLOYEE_NAME_ID")`,
         );
         return result[0];
     };
 
     newEmployeePhoneNumberIdentifier = async (): Promise<number> => {
-        const result = await this.manager.query(
+        const result = await (await this.connectionManager.manager()).query(
             `select nextval("EMPLOYEE_PHONE_NUMBER_ID")`,
         );
         return result[0];
     };
 
     newEmployeeMailAddressIdentifier = async (): Promise<number> => {
-        const result = await this.manager.query(
+        const result = await (await this.connectionManager.manager()).query(
             `select nextval("EMPLOYEE_MAIL_ADDRESS_ID")`,
         );
         return result[0];
