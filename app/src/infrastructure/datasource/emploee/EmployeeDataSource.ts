@@ -26,7 +26,7 @@ export class EmployeeDataSource implements EmployeeRepository {
         const employeeNumber: EmployeeNumber = new EmployeeNumber(
             await this.mapper.newEmployeeNumber(),
         );
-        this.mapper.insertEmployee(employeeNumber);
+        await this.mapper.insertEmployee(employeeNumber);
         return employeeNumber;
     };
 
@@ -35,9 +35,13 @@ export class EmployeeDataSource implements EmployeeRepository {
         name: Name,
     ): Promise<void> => {
         const nameId: number = await this.mapper.newEmployeeNameIdentifier();
-        this.mapper.insertEmployeeNameHistory(nameId, employeeNumber, name);
-        this.mapper.deleteEmployeeName(employeeNumber);
-        this.mapper.insertEmployeeName(employeeNumber, nameId, name);
+        await this.mapper.insertEmployeeNameHistory(
+            nameId,
+            employeeNumber,
+            name,
+        );
+        await this.mapper.deleteEmployeeName(employeeNumber);
+        await this.mapper.insertEmployeeName(employeeNumber, nameId, name);
     };
 
     registerMailAddress = async (
@@ -45,13 +49,13 @@ export class EmployeeDataSource implements EmployeeRepository {
         mailAddress: MailAddress,
     ): Promise<void> => {
         const mailAddressId: number = await this.mapper.newEmployeeMailAddressIdentifier();
-        this.mapper.insertEmployeeMailAddressHistory(
+        await this.mapper.insertEmployeeMailAddressHistory(
             mailAddressId,
             employeeNumber,
             mailAddress,
         );
-        this.mapper.deleteEmployeeMailAddress(employeeNumber);
-        this.mapper.insertEmployeeMailAddress(
+        await this.mapper.deleteEmployeeMailAddress(employeeNumber);
+        await this.mapper.insertEmployeeMailAddress(
             employeeNumber,
             mailAddressId,
             mailAddress,
@@ -63,13 +67,13 @@ export class EmployeeDataSource implements EmployeeRepository {
         phoneNumber: PhoneNumber,
     ): Promise<void> => {
         const phoneNumberId: number = await this.mapper.newEmployeePhoneNumberIdentifier();
-        this.mapper.insertEmployeePhoneNumberHistory(
+        await this.mapper.insertEmployeePhoneNumberHistory(
             phoneNumberId,
             employeeNumber,
             phoneNumber,
         );
-        this.mapper.deleteEmployeePhoneNumber(employeeNumber);
-        this.mapper.insertEmployeePhoneNumber(
+        await this.mapper.deleteEmployeePhoneNumber(employeeNumber);
+        await this.mapper.insertEmployeePhoneNumber(
             employeeNumber,
             phoneNumberId,
             phoneNumber,
@@ -79,11 +83,11 @@ export class EmployeeDataSource implements EmployeeRepository {
     registerInspireContract = async (
         employeeNumber: EmployeeNumber,
     ): Promise<void> => {
-        this.mapper.insertInspireContract(employeeNumber);
+        await this.mapper.insertInspireContract(employeeNumber);
     };
 
     registerExpireContract = async (employee: Employee): Promise<void> => {
-        this.mapper.deleteInspireContract(employee.employeeNumber());
-        this.mapper.insertExpireContract(employee.employeeNumber());
+        await this.mapper.deleteInspireContract(employee.employeeNumber());
+        await this.mapper.insertExpireContract(employee.employeeNumber());
     };
 }

@@ -19,51 +19,45 @@ export class EmployeeRecordService {
     /**
      * 従業員契約準備
      */
-    prepareNewContract = async (): Promise<EmployeeNumber> => {
-        return this.employeeRepository.registerNew();
-    };
+    prepareNewContract = async (): Promise<EmployeeNumber> =>
+        this.employeeRepository.registerNew();
 
     /**
      * 従業員名登録
      */
-    registerName = async (name: NameToChange): Promise<void> => {
+    registerName = async (name: NameToChange): Promise<void> =>
         this.employeeRepository.registerName(
             name.employeeNumber(),
             name.name(),
         );
-    };
 
     /**
      * 従業員メールアドレス登録
      */
-    registerMailAddress = async (mail: MailAddressToChange): Promise<void> => {
+    registerMailAddress = async (mail: MailAddressToChange): Promise<void> =>
         this.employeeRepository.registerMailAddress(
             mail.employeeNumber(),
             mail.mailAddress(),
         );
-    };
 
     /**
      * 従業員電話番号登録
      */
-    registerPhoneNumber = async (phone: PhoneNumberToChange): Promise<void> => {
+    registerPhoneNumber = async (phone: PhoneNumberToChange): Promise<void> =>
         this.employeeRepository.registerPhoneNumber(
             phone.employeeNumber(),
             phone.phoneNumber(),
         );
-    };
 
     /**
      * 従業員契約開始
      */
-    inspireContract = async (employeeNumber: EmployeeNumber): Promise<void> => {
+    inspireContract = async (employeeNumber: EmployeeNumber): Promise<void> =>
         this.employeeRepository.registerInspireContract(employeeNumber);
-    };
 
     /**
      * 従業員契約終了
      */
-    expireContract = async (employee: Employee): Promise<void> => {
+    expireContract = async (employee: Employee): Promise<void> =>
         this.employeeRepository.registerExpireContract(employee);
-    };
 }
