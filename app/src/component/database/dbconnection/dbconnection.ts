@@ -13,21 +13,25 @@ export class DBConnection {
     manager = () => DBConnection.getManager();
     connection = () => DBConnection.get();
 
+    // transaction
     static startTransaction = async (): Promise<void> => {
         if (DBConnection._queryRunner)
             return DBConnection._queryRunner.startTransaction();
         return (await DBConnection.getQueryRunner()).startTransaction();
     };
+    static rollbackTransaction = async (): Promise<void> =>
+        (await DBConnection.getQueryRunner()).rollbackTransaction();
+
     static getQueryRunner = async (): Promise<QueryRunner> => {
         if (DBConnection._queryRunner) return DBConnection._queryRunner;
         return DBConnection.createQueryRunner();
     };
+    static useTransaction = async <T>(
+        func: (manager: EntityManager) => Promise<T>,
+    ): Promise<T> =>
+        (await DBConnection.create()).transaction((manager) => func(manager));
 
-    static getManager = async (): Promise<EntityManager> => {
-        if (DBConnection._manager) return DBConnection._manager;
-        return DBConnection.createManager();
-    };
-
+    // connection
     static get = async (): Promise<Connection> => {
         if (DBConnection._connection && DBConnection._connection.isConnected)
             return DBConnection._connection;
@@ -38,20 +42,27 @@ export class DBConnection {
     static close = async (): Promise<void> => {
         if (!DBConnection._connection) return;
         if (DBConnection._connection && DBConnection._connection.isConnected)
-            DBConnection._connection.close();
+            await DBConnection._connection.close();
         DBConnection._connection = undefined;
         DBConnection._manager = undefined;
+        DBConnection._queryRunner = undefined;
     };
+    static release = async (): Promise<void> =>
+        (await DBConnection.getQueryRunner()).release();
+
+    // others
+    static getManager = async (): Promise<EntityManager> => {
+        if (DBConnection._manager) return DBConnection._manager;
+        return DBConnection.createManager();
+    };
+
+    // options
     static setSearchPath = () => {
         if (DBConnection._connection)
             return DBConnection._connection.query(
                 DBConnection.getSearchPathQuery(),
             );
     };
-    static useTransaction = async <T>(
-        func: (manager: EntityManager) => Promise<T>,
-    ): Promise<T> =>
-        (await DBConnection.create()).transaction((manager) => func(manager));
 
     private static _connection?: Connection;
     private static _manager?: EntityManager;
