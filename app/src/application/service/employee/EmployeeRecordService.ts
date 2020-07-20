@@ -2,6 +2,9 @@ import { EmployeeRepository } from 'src/application/repository/EmployeeRepositor
 import { inject, injectable } from 'tsyringe';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
 import { Employee } from 'src/domain/model/employee/Employee';
+import { MailAddressToChange } from 'src/domain/model/employee/MailAddressToChange';
+import { NameToChange } from 'src/domain/model/employee/NameToChange';
+import { PhoneNumberToChange } from 'src/domain/model/employee/PhoneNumberToChange';
 
 /**
  * 従業員登録更新サービス
