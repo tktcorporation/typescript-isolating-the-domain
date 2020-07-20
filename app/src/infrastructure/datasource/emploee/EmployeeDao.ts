@@ -142,8 +142,7 @@ export class EmployeeDao implements EmployeeMapper {
         phoneNumber: PhoneNumber,
     ): Promise<void> => {
         await (await this.connectionManager.manager()).query(
-            `
-            INSERT INTO "EMPLOYEE_PHONE_NUMBER_HISTORIES" ("EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_ID", "PHONE_NUMBER")
+            `INSERT INTO "EMPLOYEE_PHONE_NUMBER_HISTORIES" ("EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_ID", "PHONE_NUMBER")
             VALUES ($1, $2, $3);`,
             [id, employeeNumber.value(), phoneNumber.toString()],
         );
@@ -154,10 +153,9 @@ export class EmployeeDao implements EmployeeMapper {
         phoneId: number,
         phoneNumber: PhoneNumber,
     ): Promise<void> => {
-        await (
-            await this.connectionManager.manager()
-        ).query(
-            `INSERT INTO "EMPLOYEE_PHONE_NUMBERS" ("EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER_ID", "PHONE_NUMBER")`,
+        await (await this.connectionManager.manager()).query(
+            `INSERT INTO "EMPLOYEE_PHONE_NUMBERS" ("EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER_ID", "PHONE_NUMBER")
+            VALUES ($1, $2, $3);`,
             [employeeNumber.value(), phoneId, phoneNumber.toString()],
         );
     };
