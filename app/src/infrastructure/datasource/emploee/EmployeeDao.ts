@@ -94,7 +94,7 @@ export class EmployeeDao implements EmployeeMapper {
     ): Promise<void> => {
         await (
             await this.connectionManager.manager()
-        ).query(`DELETE FROM "EMPLOYEE_NAME" WHERE "EMPLOYEE_ID" = $1`, [
+        ).query(`DELETE FROM "EMPLOYEE_NAMES" WHERE "EMPLOYEE_ID" = $1`, [
             employeeNumber.value(),
         ]);
     };
@@ -119,7 +119,7 @@ export class EmployeeDao implements EmployeeMapper {
     ): Promise<void> => {
         await (await this.connectionManager.manager()).query(
             `
-            INSERT INTO "EMPLOYEE_NAME_HISTORIES" ("EMPLOYEE_ID", "EMPLOYEE_NAME_ID", "EMPLOYEE_NAME")
+            INSERT INTO "EMPLOYEE_NAMES" ("EMPLOYEE_ID", "EMPLOYEE_NAME_ID", "EMPLOYEE_NAME")
             VALUES ($1, $2, $3);`,
             [employeeNumber.value(), nameId, employeeName.toString()],
         );
@@ -131,7 +131,7 @@ export class EmployeeDao implements EmployeeMapper {
         await (
             await this.connectionManager.manager()
         ).query(
-            `DELETE FROM "EMPLOYEE_PHONE_NUMBER" WHERE "EMPLOYEE_ID" = $1`,
+            `DELETE FROM "EMPLOYEE_PHONE_NUMBERS" WHERE "EMPLOYEE_ID" = $1`,
             [employeeNumber.value()],
         );
     };
@@ -143,7 +143,7 @@ export class EmployeeDao implements EmployeeMapper {
     ): Promise<void> => {
         await (await this.connectionManager.manager()).query(
             `
-            INSERT INTO "EMPLOYEE_PHONE_NUMBER_HISTORIES" ("EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER")
+            INSERT INTO "EMPLOYEE_PHONE_NUMBER_HISTORIES" ("EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_ID", "PHONE_NUMBER")
             VALUES ($1, $2, $3);`,
             [id, employeeNumber.value(), phoneNumber.toString()],
         );
@@ -157,7 +157,7 @@ export class EmployeeDao implements EmployeeMapper {
         await (
             await this.connectionManager.manager()
         ).query(
-            `INSERT INTO "EMPLOYEE_PHONE_NUMBERS" ("EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER_ID", "EMPLOYEE_PHONE_NUMBER")`,
+            `INSERT INTO "EMPLOYEE_PHONE_NUMBERS" ("EMPLOYEE_ID", "EMPLOYEE_PHONE_NUMBER_ID", "PHONE_NUMBER")`,
             [employeeNumber.value(), phoneId, phoneNumber.toString()],
         );
     };
@@ -168,7 +168,7 @@ export class EmployeeDao implements EmployeeMapper {
         await (
             await this.connectionManager.manager()
         ).query(
-            `DELETE FROM "EMPLOYEE_MAIL_ADDRESS" WHERE "EMPLOYEE_ID" = $1`,
+            `DELETE FROM "EMPLOYEE_MAIL_ADDRESSES" WHERE "EMPLOYEE_ID" = $1`,
             [employeeNumber.value()],
         );
     };
@@ -179,10 +179,9 @@ export class EmployeeDao implements EmployeeMapper {
         mailAddress: MailAddress,
     ): Promise<void> => {
         await (await this.connectionManager.manager()).query(
-            `
-            INSERT INTO "EMPLOYEE_MAIL_ADDRESS_HISTORIES" ("EMPLOYEE_MAIL_ADDRESS_ID", "EMPLOYEE_ID", "EMPLOYEE_MAIL_ADDRESS")
+            `INSERT INTO "EMPLOYEE_MAIL_ADDRESS_HISTORIES" ("EMPLOYEE_MAIL_ADDRESS_ID", "EMPLOYEE_ID", "MAIL_ADDRESS")
             VALUES ($1, $2, $3);`,
-            [id, employeeNumber.value, mailAddress.toString()],
+            [id, employeeNumber.value(), mailAddress.toString()],
         );
     };
 
@@ -195,7 +194,7 @@ export class EmployeeDao implements EmployeeMapper {
             `
             INSERT INTO "EMPLOYEE_MAIL_ADDRESSES" ("EMPLOYEE_ID", "EMPLOYEE_MAIL_ADDRESS_ID", "MAIL_ADDRESS")
             VALUES ($1, $2, $3);`,
-            [employeeNumber.value, mailAddressId, mailAddress.toString()],
+            [employeeNumber.value(), mailAddressId, mailAddress.toString()],
         );
     };
 
@@ -206,7 +205,7 @@ export class EmployeeDao implements EmployeeMapper {
             `
             INSERT INTO "INSPIRED_CONTRACTS" ("EMPLOYEE_ID")
             VALUES ($1);`,
-            [employeeNumber.value],
+            [employeeNumber.value()],
         );
     };
 
@@ -216,7 +215,7 @@ export class EmployeeDao implements EmployeeMapper {
         await (
             await this.connectionManager.manager()
         ).query(`DELETE FROM "INSPIRED_CONTRACT" WHERE "EMPLOYEE_ID" = $1`, [
-            employeeNumber.value,
+            employeeNumber.value(),
         ]);
     };
 
@@ -226,7 +225,7 @@ export class EmployeeDao implements EmployeeMapper {
         await (
             await this.connectionManager.manager()
         ).query(`DELETE FROM "EXPIRED_CONTRACT" WHERE "EMPLOYEE_ID" = $1`, [
-            employeeNumber.value,
+            employeeNumber.value(),
         ]);
     };
 
@@ -240,23 +239,23 @@ export class EmployeeDao implements EmployeeMapper {
     };
 
     newEmployeeNameIdentifier = async (): Promise<number> => {
-        const result = await (await this.connectionManager.manager()).query(
-            `select nextval('"EMPLOYEE_NAME_ID"')`,
-        );
-        return result[0];
+        const result: [{ nextval: string }] = await (
+            await this.connectionManager.manager()
+        ).query(`select nextval('"EMPLOYEE_NAME_ID"')`);
+        return Number.parseInt(result[0].nextval);
     };
 
     newEmployeePhoneNumberIdentifier = async (): Promise<number> => {
-        const result = await (await this.connectionManager.manager()).query(
-            `select nextval('"EMPLOYEE_PHONE_NUMBER_ID"')`,
-        );
-        return result[0];
+        const result: [{ nextval: string }] = await (
+            await this.connectionManager.manager()
+        ).query(`select nextval('"EMPLOYEE_PHONE_NUMBER_ID"')`);
+        return Number.parseInt(result[0].nextval);
     };
 
     newEmployeeMailAddressIdentifier = async (): Promise<number> => {
-        const result = await (await this.connectionManager.manager()).query(
-            `select nextval('"EMPLOYEE_MAIL_ADDRESS_ID"')`,
-        );
-        return result[0];
+        const result: [{ nextval: string }] = await (
+            await this.connectionManager.manager()
+        ).query(`select nextval('"EMPLOYEE_MAIL_ADDRESS_ID"')`);
+        return Number.parseInt(result[0].nextval);
     };
 }
