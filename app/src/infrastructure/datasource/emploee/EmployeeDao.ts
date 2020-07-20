@@ -241,21 +241,21 @@ export class EmployeeDao implements EmployeeMapper {
 
     newEmployeeNameIdentifier = async (): Promise<number> => {
         const result = await (await this.connectionManager.manager()).query(
-            `select nextval("EMPLOYEE_NAME_ID")`,
+            `select nextval('"EMPLOYEE_NAME_ID"')`,
         );
         return result[0];
     };
 
     newEmployeePhoneNumberIdentifier = async (): Promise<number> => {
         const result = await (await this.connectionManager.manager()).query(
-            `select nextval("EMPLOYEE_PHONE_NUMBER_ID")`,
+            `select nextval('"EMPLOYEE_PHONE_NUMBER_ID"')`,
         );
         return result[0];
     };
 
     newEmployeeMailAddressIdentifier = async (): Promise<number> => {
         const result = await (await this.connectionManager.manager()).query(
-            `select nextval("EMPLOYEE_MAIL_ADDRESS_ID")`,
+            `select nextval('"EMPLOYEE_MAIL_ADDRESS_ID"')`,
         );
         return result[0];
     };
