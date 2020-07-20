@@ -11,6 +11,12 @@
 
 # Setup
 
+## Build Docker
+
+```bash
+$ docker-compose build
+```
+
 ## Exec Docker container
 
 ```bash
