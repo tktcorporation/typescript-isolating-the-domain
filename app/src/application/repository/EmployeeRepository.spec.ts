@@ -1,7 +1,6 @@
 import 'reflect-metadata';
-import { DBConnection } from 'src/component/database/dbconnection';
+import { DBConnection } from 'src/component/database/dbconnection/dbconnection';
 import { EmployeeDao } from 'src/infrastructure/datasource/emploee/EmployeeDao';
-import { QueryRunner } from 'typeorm';
 import { container } from 'tsyringe';
 import { EmployeeRecordCoordinator } from '../coordinator/EmployeeRecordCoordinator';
 import { EmployeeToRegister } from 'src/domain/model/employee/EmployeeToRegister';
@@ -16,7 +15,6 @@ container.register('EmployeeMapper', { useClass: EmployeeDao });
 container.register('EmployeeRepository', { useClass: EmployeeDataSource });
 
 describe('EmployeeRepository', () => {
-    let queryRunner: QueryRunner;
     let coordinator: EmployeeRecordCoordinator;
 
     let employeeNumber: EmployeeNumber;
@@ -26,7 +24,7 @@ describe('EmployeeRepository', () => {
     const phoneNumber = '000-0000-0000';
 
     beforeAll(async () => {
-        queryRunner = await DBConnection.getQueryRunner();
+        await DBConnection.startTransaction();
         coordinator = container.resolve(EmployeeRecordCoordinator);
     });
 
@@ -58,8 +56,8 @@ describe('EmployeeRepository', () => {
         expect(employee?.phoneNumber()?.toString()).toBe(phoneNumber);
     });
     afterAll(async () => {
-        await queryRunner.rollbackTransaction();
-        await queryRunner.release();
+        await DBConnection.rollbackTransaction();
+        await DBConnection.release();
         await DBConnection.close();
     });
 });
