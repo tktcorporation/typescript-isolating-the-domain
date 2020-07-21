@@ -7,6 +7,7 @@ import {
     QueryRunner,
 } from 'typeorm';
 import { singleton } from 'tsyringe';
+import { AsyncDecorator } from 'src/component/decorator/AsyncDecorator';
 
 @singleton()
 export class DBConnection {
@@ -112,77 +113,20 @@ export namespace DBConnection {
 }
 
 /**
- * Add async to decorated func.
  * - Before Action: Start Transaction
  * - After Action(no throw): Commit Transaction
  * - Catch Action: Rollback Transaction
  */
-// export const Transact = () => {
-//     return (
-//         target: Object,
-//         propertyKey: string | symbol,
-//         descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>,
-//     ) => {
-//         const method = descriptor.value;
-//         if (method === undefined) return;
-//         descriptor.value = async function (...args: any[]) {
-//             console.log('開始');
-//             await DBConnection.startTransaction();
-//             const result = await (async () => {
-//                 try {
-//                     return await method.apply(this, args);
-//                 } catch (error) {
-//                     console.log('ロールバック');
-//                     await DBConnection.rollbackTransaction();
-//                     throw error;
-//                 }
-//             })();
-//             console.log('コミット');
-//             await DBConnection.commitTransaction();
-//             return result;
-//         };
-//         return descriptor;
-//     };
-// };
-
-/**
- * - Before Action: Start Transaction
- * - After Action(no throw): Commit Transaction
- * - Catch Action: Rollback Transaction
- */
-export function Transact(): MethodDecorator {
-    return function (
-        target: Object,
-        methodName: string | symbol,
-        descriptor: PropertyDescriptor,
-    ) {
-        // save original method - we gonna need it
-        const originalMethod = descriptor.value;
-        // override method descriptor with proxy method
-        descriptor.value = function (...args: any[]) {
-            const originalMethodFunc = async () => {
-                return originalMethod.apply(this, [...args]);
-            };
-            const beforeFunc = async () => {
-                await DBConnection.startTransaction();
-            };
-            const afterFunc = async () => {
-                await DBConnection.commitTransaction();
-            };
-            const catchFunc = async (error: any) => {
-                await DBConnection.rollbackTransaction();
-            };
-            const asyncFunc = async () => {
-                try {
-                    await beforeFunc();
-                    const result = await originalMethodFunc();
-                    await afterFunc();
-                    return result;
-                } catch (e) {
-                    await catchFunc(e);
-                }
-            };
-            return asyncFunc();
-        };
-    };
-}
+export const Transact = () =>
+    AsyncDecorator(
+        async () => {
+            await DBConnection.startTransaction();
+        },
+        async () => {
+            await DBConnection.commitTransaction();
+        },
+        async (error: any) => {
+            await DBConnection.rollbackTransaction();
+            throw error;
+        },
+    );
