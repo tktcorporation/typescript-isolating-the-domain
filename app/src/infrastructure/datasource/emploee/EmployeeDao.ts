@@ -43,7 +43,7 @@ export class EmployeeDao implements EmployeeMapper {
             `${EmployeeDao.selectEmployee} WHERE "EMPLOYEE"."EMPLOYEE_ID" = $1;`,
             [employeeNumber.value()],
         );
-        if (result[0] === undefined) return;
+        if (result.length < 1) return;
         return new Employee(
             ((params: {
                 employeeNumberValue: number;
