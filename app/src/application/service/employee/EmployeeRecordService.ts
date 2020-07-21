@@ -5,6 +5,7 @@ import { Employee } from 'src/domain/model/employee/Employee';
 import { MailAddressToChange } from 'src/domain/model/employee/MailAddressToChange';
 import { NameToChange } from 'src/domain/model/employee/NameToChange';
 import { PhoneNumberToChange } from 'src/domain/model/employee/PhoneNumberToChange';
+import { Transact } from 'src/component/database/dbconnection/dbconnection';
 
 /**
  * 従業員登録更新サービス
@@ -19,45 +20,57 @@ export class EmployeeRecordService {
     /**
      * 従業員契約準備
      */
-    prepareNewContract = async (): Promise<EmployeeNumber> =>
-        this.employeeRepository.registerNew();
+    @Transact()
+    prepareNewContract(): Promise<EmployeeNumber> {
+        return this.employeeRepository.registerNew();
+    }
 
     /**
      * 従業員名登録
      */
-    registerName = async (name: NameToChange): Promise<void> =>
-        this.employeeRepository.registerName(
+    @Transact()
+    registerName(name: NameToChange): Promise<void> {
+        return this.employeeRepository.registerName(
             name.employeeNumber(),
             name.name(),
         );
+    }
 
     /**
      * 従業員メールアドレス登録
      */
-    registerMailAddress = async (mail: MailAddressToChange): Promise<void> =>
-        this.employeeRepository.registerMailAddress(
+    @Transact()
+    registerMailAddress(mail: MailAddressToChange): Promise<void> {
+        return this.employeeRepository.registerMailAddress(
             mail.employeeNumber(),
             mail.mailAddress(),
         );
+    }
 
     /**
      * 従業員電話番号登録
      */
-    registerPhoneNumber = async (phone: PhoneNumberToChange): Promise<void> =>
-        this.employeeRepository.registerPhoneNumber(
+    @Transact()
+    registerPhoneNumber(phone: PhoneNumberToChange): Promise<void> {
+        return this.employeeRepository.registerPhoneNumber(
             phone.employeeNumber(),
             phone.phoneNumber(),
         );
+    }
 
     /**
      * 従業員契約開始
      */
-    inspireContract = async (employeeNumber: EmployeeNumber): Promise<void> =>
-        this.employeeRepository.registerInspireContract(employeeNumber);
+    @Transact()
+    inspireContract(employeeNumber: EmployeeNumber): Promise<void> {
+        return this.employeeRepository.registerInspireContract(employeeNumber);
+    }
 
     /**
      * 従業員契約終了
      */
-    expireContract = async (employee: Employee): Promise<void> =>
-        this.employeeRepository.registerExpireContract(employee);
+    @Transact()
+    expireContract(employee: Employee): Promise<void> {
+        return this.employeeRepository.registerExpireContract(employee);
+    }
 }
