@@ -57,10 +57,10 @@ export class DBConnection {
     };
 
     // options
-    static setSearchPath = () => {
+    static setSearchPath = (schemaName: string) => {
         if (DBConnection._connection)
             return DBConnection._connection.query(
-                DBConnection.getSearchPathQuery(),
+                DBConnection.getSearchPathQuery(schemaName),
             );
     };
 
@@ -74,7 +74,8 @@ export class DBConnection {
         ).catch(() => getConnection());
         if (!DBConnection._connection.isConnected)
             await DBConnection._connection.connect();
-        // await DBConnection.setSearchPath();
+        if (process.env.SCHEMA_NAME)
+            await DBConnection.setSearchPath(process.env.SCHEMA_NAME);
         return DBConnection._connection;
     };
     private static createQueryRunner = async (): Promise<QueryRunner> => {
@@ -87,8 +88,8 @@ export class DBConnection {
         DBConnection._manager = (await DBConnection.getQueryRunner()).manager;
         return DBConnection._manager;
     };
-    private static getSearchPathQuery = () =>
-        `SET search_path TO '${process.env.SCHEMA_NAME}';`;
+    private static getSearchPathQuery = (schemaName: string) =>
+        `SET search_path TO '${schemaName}';`;
 }
 export namespace DBConnection {
     export const options: ConnectionOptions = {
