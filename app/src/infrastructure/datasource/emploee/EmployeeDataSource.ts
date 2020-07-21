@@ -12,11 +12,8 @@ import { injectable, inject } from 'tsyringe';
 export class EmployeeDataSource implements EmployeeRepository {
     constructor(@inject('EmployeeMapper') private mapper: EmployeeMapper) {}
 
-    choose = async (
-        employeeNumber: EmployeeNumber,
-    ): Promise<Employee | undefined> => {
-        return this.mapper.selectByEmployeeNumber(employeeNumber);
-    };
+    choose = (employeeNumber: EmployeeNumber): Promise<Employee | undefined> =>
+        this.mapper.selectByEmployeeNumber(employeeNumber);
 
     findUnderContracts = async (): Promise<ContractingEmployees> => {
         return new ContractingEmployees(await this.mapper.selectContracts());
