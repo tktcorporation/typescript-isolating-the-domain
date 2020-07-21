@@ -41,6 +41,11 @@ export class DBConnection {
             return DBConnection._connection.connect();
         return DBConnection.create();
     };
+    static getCurrent = (): Connection => {
+        if (!DBConnection._connection)
+            throw new Error('Current Connection is not Found');
+        return DBConnection._connection;
+    };
     static close = async (): Promise<void> => {
         if (!DBConnection._connection) return;
         if (DBConnection._connection && DBConnection._connection.isConnected)
@@ -112,30 +117,55 @@ export namespace DBConnection {
  * - After Action(no throw): Commit Transaction
  * - Catch Action: Rollback Transaction
  */
-export const Transact = (): MethodDecorator => {
-    return (
+// export const Transact = () => {
+//     return (
+//         target: Object,
+//         propertyKey: string | symbol,
+//         descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>,
+//     ) => {
+//         const method = descriptor.value;
+//         if (method === undefined) return;
+//         descriptor.value = async function (...args: any[]) {
+//             console.log('開始');
+//             await DBConnection.startTransaction();
+//             const result = await (async () => {
+//                 try {
+//                     return await method.apply(this, args);
+//                 } catch (error) {
+//                     console.log('ロールバック');
+//                     await DBConnection.rollbackTransaction();
+//                     throw error;
+//                 }
+//             })();
+//             console.log('コミット');
+//             await DBConnection.commitTransaction();
+//             return result;
+//         };
+//         return descriptor;
+//     };
+// };
+
+/**
+ * - Before Action: Start Transaction
+ * - After Action(no throw): Commit Transaction
+ * - Catch Action: Rollback Transaction
+ */
+export function Transact(): MethodDecorator {
+    return function (
         target: Object,
-        propertyKey: string | symbol,
+        methodName: string | symbol,
         descriptor: PropertyDescriptor,
-    ) => {
-        const method = descriptor.value;
-        if (method === undefined) return;
-        descriptor.value = async function () {
-            console.log('開始');
-            await DBConnection.startTransaction();
-            const result = await (async () => {
-                try {
-                    return await method.apply(this, arguments);
-                } catch (error) {
-                    console.log('ロールバック');
-                    await DBConnection.rollbackTransaction();
-                    throw error;
-                }
-            })();
-            console.log('コミット');
-            await DBConnection.commitTransaction();
-            return result;
+    ) {
+        // save original method - we gonna need it
+        const originalMethod = descriptor.value;
+        // override method descriptor with proxy method
+        descriptor.value = function (...args: any[]) {
+            const transactionCallback = (entityManager: EntityManager) => {
+                return originalMethod.apply(this, [...args]);
+            };
+            return DBConnection.getManager().then((manager) =>
+                manager.transaction(transactionCallback),
+            );
         };
-        return descriptor;
     };
-};
+}
