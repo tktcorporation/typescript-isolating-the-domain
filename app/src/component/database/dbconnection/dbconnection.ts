@@ -160,26 +160,29 @@ export function Transact(): MethodDecorator {
         const originalMethod = descriptor.value;
         // override method descriptor with proxy method
         descriptor.value = function (...args: any[]) {
-            const transactionCallback = async () => {
+            const originalMethodFunc = async () => {
                 return originalMethod.apply(this, [...args]);
             };
-            return DBConnection.getManager().then(() =>
-                DBConnection.startTransaction().then(() =>
-                    transactionCallback()
-                        .then(async (result) => {
-                            await DBConnection.commitTransaction().then(() =>
-                                console.log('コミット'),
-                            );
-                            return result;
-                        })
-                        .catch(async (result) => {
-                            await DBConnection.rollbackTransaction().then(() =>
-                                console.log('ロールバック'),
-                            );
-                            return result;
-                        }),
-                ),
-            );
+            const beforeFunc = async () => {
+                await DBConnection.startTransaction();
+            };
+            const afterFunc = async () => {
+                await DBConnection.commitTransaction();
+            };
+            const catchFunc = async (error: any) => {
+                await DBConnection.rollbackTransaction();
+            };
+            const asyncFunc = async () => {
+                try {
+                    await beforeFunc();
+                    const result = await originalMethodFunc();
+                    await afterFunc();
+                    return result;
+                } catch (e) {
+                    await catchFunc(e);
+                }
+            };
+            return asyncFunc();
         };
     };
 }
