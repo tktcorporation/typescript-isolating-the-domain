@@ -21,6 +21,8 @@ export class DBConnection {
     };
     static rollbackTransaction = async (): Promise<void> =>
         (await DBConnection.getQueryRunner()).rollbackTransaction();
+    static commitTransaction = async (): Promise<void> =>
+        (await DBConnection.getQueryRunner()).commitTransaction();
 
     static getQueryRunner = async (): Promise<QueryRunner> => {
         if (DBConnection._queryRunner) return DBConnection._queryRunner;
@@ -103,3 +105,37 @@ export namespace DBConnection {
         logging: ['error'], //process.env.NODE_ENV === 'production' ? ['error'] : 'all',
     };
 }
+
+/**
+ * Add async to decorated func.
+ * - Before Action: Start Transaction
+ * - After Action(no throw): Commit Transaction
+ * - Catch Action: Rollback Transaction
+ */
+export const Transact = (): MethodDecorator => {
+    return (
+        target: Object,
+        propertyKey: string | symbol,
+        descriptor: PropertyDescriptor,
+    ) => {
+        const method = descriptor.value;
+        if (method === undefined) return;
+        descriptor.value = async function () {
+            console.log('開始');
+            await DBConnection.startTransaction();
+            const result = await (async () => {
+                try {
+                    return await method.apply(this, arguments);
+                } catch (error) {
+                    console.log('ロールバック');
+                    await DBConnection.rollbackTransaction();
+                    throw error;
+                }
+            })();
+            console.log('コミット');
+            await DBConnection.commitTransaction();
+            return result;
+        };
+        return descriptor;
+    };
+};
