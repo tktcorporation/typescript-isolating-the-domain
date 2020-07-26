@@ -12,26 +12,16 @@ export class Employee {
     private _mailAddress: MailAddress;
     private _phoneNumber: PhoneNumber;
 
-    /**
-     * No params constructor is deplicated
-     */
-    constructor();
     constructor(params: {
         employeeNumber: EmployeeNumber;
         name: Name;
         mailAddress: MailAddress;
         phoneNumber: PhoneNumber;
-    });
-    constructor(params?: {
-        employeeNumber: EmployeeNumber;
-        name: Name;
-        mailAddress: MailAddress;
-        phoneNumber: PhoneNumber;
     }) {
-        this._employeeNumber = params?.employeeNumber ?? new EmployeeNumber();
-        this._name = params?.name ?? new Name();
-        this._mailAddress = params?.mailAddress ?? new MailAddress();
-        this._phoneNumber = params?.phoneNumber ?? new PhoneNumber();
+        this._employeeNumber = params?.employeeNumber;
+        this._name = params?.name;
+        this._mailAddress = params?.mailAddress;
+        this._phoneNumber = params?.phoneNumber;
     }
 
     employeeNumber(): EmployeeNumber {
