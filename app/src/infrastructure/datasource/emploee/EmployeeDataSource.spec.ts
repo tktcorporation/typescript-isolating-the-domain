@@ -16,8 +16,13 @@ describe('EmployeeDataSource', () => {
         datasource = container.resolve(EmployeeDataSource);
     });
     it('choose', async () => {
-        const number = new EmployeeNumber();
-        const employee = await datasource.choose(number);
+        const employeeNumber = await datasource.registerNew();
+        expect(employeeNumber).toBeDefined();
+        expect(employeeNumber.value()).toBeGreaterThan(0);
+    });
+    it('choose doesnt have join data', async () => {
+        const employeeNumber = await datasource.registerNew();
+        const employee = await datasource.choose(employeeNumber);
         expect(employee).toBeUndefined();
     });
     afterAll(async () => {
