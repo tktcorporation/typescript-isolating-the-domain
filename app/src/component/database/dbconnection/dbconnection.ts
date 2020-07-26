@@ -129,4 +129,8 @@ export const Transact = () =>
             await DBConnection.rollbackTransaction();
             throw error;
         },
+        async () => {
+            await DBConnection.release();
+            await DBConnection.close();
+        },
     );

@@ -10,6 +10,7 @@ export function AsyncDecorator(
     beforeFunc?: VoidFunc,
     afterFunc?: VoidFunc,
     catchFunc?: ErrorArgVoidFunc,
+    finalFunc?: VoidFunc,
 ): MethodDecorator {
     return function (
         target: Object,
@@ -30,6 +31,8 @@ export function AsyncDecorator(
                 } catch (e) {
                     if (catchFunc === undefined) throw e;
                     await catchFunc?.(e);
+                } finally {
+                    await finalFunc?.();
                 }
             };
             return asyncFunc();
