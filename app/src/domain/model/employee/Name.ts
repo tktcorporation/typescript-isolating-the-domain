@@ -4,7 +4,7 @@ import { IsNotEmpty, MaxLength } from 'class-validator';
  * 氏名
  */
 export class Name {
-    private static readonly 字数制限 = 40;
+    static readonly 字数制限 = 40;
 
     @IsNotEmpty()
     @MaxLength(Name.字数制限)
