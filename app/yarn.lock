@@ -4417,6 +4417,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
+type-async-decorator@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/type-async-decorator/-/type-async-decorator-0.1.0.tgz#907630a8deb17003e03aeda2a69968307f144f3d"
+  integrity sha512-seemsXcjpRij3XEv1IIJuJOSrgJaPpaPZeMVnnvt7leQrMBJrCrLA5AQAfu5Si+95pBU2v77yL0GUzW2kv47bA==
+
 type-check@~0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/type-check/-/type-check-0.3.2.tgz#5884cab512cf1d355e3fb784f30804b2b520db72"

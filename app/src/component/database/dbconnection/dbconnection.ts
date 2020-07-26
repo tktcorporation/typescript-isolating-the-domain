@@ -7,7 +7,7 @@ import {
     QueryRunner,
 } from 'typeorm';
 import { singleton } from 'tsyringe';
-import { AsyncDecorator } from 'src/component/decorator/AsyncDecorator';
+import { AsyncMethodDecorator } from 'type-async-decorator';
 
 @singleton()
 export class DBConnection {
@@ -118,7 +118,7 @@ export namespace DBConnection {
  * - Catch Action: Rollback Transaction
  */
 export const Transact = () =>
-    AsyncDecorator(
+    AsyncMethodDecorator(
         async () => {
             await DBConnection.startTransaction();
         },
