@@ -5,10 +5,6 @@ import { EmployeeDao } from 'src/infrastructure/datasource/emploee/EmployeeDao';
 import { EmployeeDataSource } from 'src/infrastructure/datasource/emploee/EmployeeDataSource';
 import { Test, TestingModule } from '@nestjs/testing';
 
-container.register('ConnectionManager', { useClass: DBConnection });
-container.register('EmployeeMapper', { useClass: EmployeeDao });
-container.register('EmployeeRepository', { useClass: EmployeeDataSource });
-
 describe('EmployeeRepository', () => {
     let module: TestingModule;
     let service: EmployeeRecordService;
