@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { DBConnection } from 'src/component/database/dbconnection/dbconnection';
 import { EmployeeDao } from 'src/infrastructure/datasource/emploee/EmployeeDao';
-import { container } from 'tsyringe';
 import { EmployeeRecordCoordinator } from '../coordinator/EmployeeRecordCoordinator';
 import { EmployeeToRegister } from 'src/domain/model/employee/EmployeeToRegister';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';

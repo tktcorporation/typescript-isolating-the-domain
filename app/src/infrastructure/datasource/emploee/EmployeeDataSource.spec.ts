@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { DBConnection } from 'src/component/database/dbconnection/dbconnection';
 import { EmployeeDao } from './EmployeeDao';
 import { EmployeeDataSource } from './EmployeeDataSource';
-import { container } from 'tsyringe';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
 import { Test, TestingModule } from '@nestjs/testing';
 
