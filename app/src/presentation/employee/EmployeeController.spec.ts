@@ -3,9 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EmployeeController } from './EmployeeController';
 import { EmployeeRegisterBody } from './request/EmployeeRegisterBody';
 import { DBConnection } from 'src/component/database/dbconnection/dbconnection';
-import { EmployeeDao } from 'src/infrastructure/datasource/emploee/EmployeeDao';
-import { EmployeeDataSource } from 'src/infrastructure/datasource/emploee/EmployeeDataSource';
-import { EmployeeRecordService } from 'src/application/service/employee/EmployeeRecordService';
 import { EmployeeModule } from 'src/module/employee.module';
 
 describe('EmployeeController', () => {

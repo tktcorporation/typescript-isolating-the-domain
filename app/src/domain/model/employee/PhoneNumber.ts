@@ -13,7 +13,7 @@ export class PhoneNumber {
     @IsPhoneNumber('JP')
     @MaxLength(13)
     @MinLength(8)
-    private _value: string = '';
+    private _value = '';
 
     constructor();
     constructor(phoneNumber: string);

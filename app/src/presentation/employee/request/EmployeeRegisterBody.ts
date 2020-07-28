@@ -31,7 +31,7 @@ export class EmployeeRegisterBody {
         this.phone_number = phone_number;
     }
 
-    toDomain = () =>
+    toDomain = (): EmployeeToRegister =>
         new EmployeeToRegister(
             new Name(this.name),
             new MailAddress(this.mail_address),

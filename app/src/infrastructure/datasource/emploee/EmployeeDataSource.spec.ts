@@ -5,10 +5,6 @@ import { EmployeeDataSource } from './EmployeeDataSource';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
 import { Test, TestingModule } from '@nestjs/testing';
 
-container.register('ConnectionManager', { useClass: DBConnection });
-container.register('EmployeeMapper', { useClass: EmployeeDao });
-container.register('EmployeeRepository', { useClass: EmployeeDataSource });
-
 describe('EmployeeDataSource', () => {
     let module: TestingModule;
     let datasource: EmployeeDataSource;

@@ -6,7 +6,7 @@ import { IsNotEmpty, IsEmail } from 'class-validator';
 export class MailAddress {
     @IsNotEmpty()
     @IsEmail()
-    private _value: string = '';
+    private _value = '';
 
     constructor();
     constructor(mailAddress: string);

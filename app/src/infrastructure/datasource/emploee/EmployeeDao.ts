@@ -14,7 +14,7 @@ export class EmployeeDao implements EmployeeMapper {
         private connectionManager: ConnectionManager,
     ) {}
 
-    private static selectEmployee: string = `
+    private static selectEmployee = `
         SELECT
             "EMPLOYEE"."EMPLOYEE_ID" AS "employeeNumberValue",
             "EMPLOYEE_NAME"."EMPLOYEE_NAME" AS "nameValue",
