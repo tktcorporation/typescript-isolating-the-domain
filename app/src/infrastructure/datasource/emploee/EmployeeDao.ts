@@ -4,13 +4,13 @@ import { Employee } from 'src/domain/model/employee/Employee';
 import { Name } from 'src/domain/model/employee/Name';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
-import { injectable, inject } from 'tsyringe';
 import { ConnectionManager } from '../ConnectionManager';
+import { Inject, Injectable } from '@nestjs/common';
 
-@injectable()
+@Injectable()
 export class EmployeeDao implements EmployeeMapper {
     constructor(
-        @inject('ConnectionManager')
+        @Inject('ConnectionManager')
         private connectionManager: ConnectionManager,
     ) {}
 

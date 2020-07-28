@@ -9,14 +9,13 @@ import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { Name } from 'src/domain/model/employee/Name';
 import { EmployeeDataSource } from 'src/infrastructure/datasource/emploee/EmployeeDataSource';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
-
-container.register('ConnectionManager', { useClass: DBConnection });
-container.register('EmployeeMapper', { useClass: EmployeeDao });
-container.register('EmployeeRepository', { useClass: EmployeeDataSource });
+import { TestingModule, Test } from '@nestjs/testing';
+import { EmployeeRepository } from '../repository/EmployeeRepository';
+import { EmployeeRecordService } from '../service/employee/EmployeeRecordService';
 
 describe('EmployeeRecordCoordinator', () => {
+    let module: TestingModule;
     let coordinator: EmployeeRecordCoordinator;
-
     let employeeNumber: EmployeeNumber;
 
     const name = 'name';
@@ -24,7 +23,16 @@ describe('EmployeeRecordCoordinator', () => {
     const phoneNumber = '000-0000-0000';
 
     beforeAll(async () => {
-        coordinator = container.resolve(EmployeeRecordCoordinator);
+        module = await Test.createTestingModule({
+            providers: [
+                { provide: 'ConnectionManager', useClass: DBConnection },
+                { provide: 'EmployeeMapper', useClass: EmployeeDao },
+                { provide: 'EmployeeRepository', useClass: EmployeeDataSource },
+                EmployeeRecordService,
+                EmployeeRecordCoordinator,
+            ],
+        }).compile();
+        coordinator = module.get(EmployeeRecordCoordinator);
     });
 
     it('should be defined', () => {
@@ -42,8 +50,8 @@ describe('EmployeeRecordCoordinator', () => {
         expect(typeof employeeNumber.value()).toBe('number');
     });
     it('choose', async () => {
-        const employee = await container
-            .resolve(EmployeeDataSource)
+        const employee = await module
+            .get<EmployeeRepository>('EmployeeRepository')
             .choose(employeeNumber);
         expect(employee).toBeDefined();
         expect(employee?.employeeNumber()?.value()).toBe(

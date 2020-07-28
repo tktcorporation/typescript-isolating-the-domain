@@ -1,12 +1,10 @@
-import { injectable } from 'tsyringe';
-import { Post, Body, JsonController } from 'routing-controllers';
-import { EmployeeToRegister } from 'src/domain/model/employee/EmployeeToRegister';
 import { EmployeeRecordCoordinator } from 'src/application/coordinator/EmployeeRecordCoordinator';
 import { EmployeeRegisterBody } from './request/EmployeeRegisterBody';
 import { EmployeeNumberResponse } from './response/EmployeeNumberResponse';
+import { Injectable, Controller, Post, Body } from '@nestjs/common';
 
-@injectable()
-@JsonController('/employees')
+@Injectable()
+@Controller('/employees')
 export class EmployeeController {
     constructor(
         private readonly recordCoordinator: EmployeeRecordCoordinator,

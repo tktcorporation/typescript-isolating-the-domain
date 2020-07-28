@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EmployeeRepository } from 'src/application/repository/EmployeeRepository';
 import { inject, injectable } from 'tsyringe';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
@@ -10,10 +11,10 @@ import { Transact } from 'src/component/database/dbconnection/dbconnection';
 /**
  * 従業員登録更新サービス
  */
-@injectable()
+@Injectable()
 export class EmployeeRecordService {
     constructor(
-        @inject('EmployeeRepository')
+        @Inject('EmployeeRepository')
         private employeeRepository: EmployeeRepository,
     ) {}
 

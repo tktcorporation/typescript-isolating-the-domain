@@ -4,16 +4,25 @@ import { EmployeeDao } from './EmployeeDao';
 import { EmployeeDataSource } from './EmployeeDataSource';
 import { container } from 'tsyringe';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
+import { Test, TestingModule } from '@nestjs/testing';
 
 container.register('ConnectionManager', { useClass: DBConnection });
 container.register('EmployeeMapper', { useClass: EmployeeDao });
 container.register('EmployeeRepository', { useClass: EmployeeDataSource });
 
 describe('EmployeeDataSource', () => {
+    let module: TestingModule;
     let datasource: EmployeeDataSource;
     beforeAll(async () => {
         await DBConnection.startTransaction();
-        datasource = container.resolve(EmployeeDataSource);
+        module = await Test.createTestingModule({
+            providers: [
+                { provide: 'ConnectionManager', useClass: DBConnection },
+                { provide: 'EmployeeMapper', useClass: EmployeeDao },
+                EmployeeDataSource,
+            ],
+        }).compile();
+        datasource = module.get(EmployeeDataSource);
     });
     it('choose', async () => {
         const employeeNumber = await datasource.registerNew();

@@ -4,12 +4,12 @@ import { EmployeeToRegister } from 'src/domain/model/employee/EmployeeToRegister
 import { NameToChange } from 'src/domain/model/employee/NameToChange';
 import { MailAddressToChange } from 'src/domain/model/employee/MailAddressToChange';
 import { PhoneNumberToChange } from 'src/domain/model/employee/PhoneNumberToChange';
-import { injectable } from 'tsyringe';
+import { Injectable } from '@nestjs/common';
 
 /**
  * 従業員登録コーディネーター
  */
-@injectable()
+@Injectable()
 export class EmployeeRecordCoordinator {
     constructor(private employeeRecordService: EmployeeRecordService) {}
 

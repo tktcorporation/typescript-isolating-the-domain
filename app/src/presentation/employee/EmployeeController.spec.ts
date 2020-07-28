@@ -1,19 +1,21 @@
 import 'reflect-metadata';
+import { Test, TestingModule } from '@nestjs/testing';
 import { EmployeeController } from './EmployeeController';
 import { container } from 'tsyringe';
 import { EmployeeRegisterBody } from './request/EmployeeRegisterBody';
 import { DBConnection } from 'src/component/database/dbconnection/dbconnection';
 import { EmployeeDao } from 'src/infrastructure/datasource/emploee/EmployeeDao';
 import { EmployeeDataSource } from 'src/infrastructure/datasource/emploee/EmployeeDataSource';
-
-container.register('ConnectionManager', { useClass: DBConnection });
-container.register('EmployeeMapper', { useClass: EmployeeDao });
-container.register('EmployeeRepository', { useClass: EmployeeDataSource });
+import { EmployeeRecordService } from 'src/application/service/employee/EmployeeRecordService';
+import { EmployeeModule } from 'src/module/employee.module';
 
 describe('EmployeeController', () => {
     let controller: EmployeeController;
-    beforeAll(() => {
-        controller = container.resolve(EmployeeController);
+    beforeAll(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            imports: [EmployeeModule],
+        }).compile();
+        controller = module.get<EmployeeController>(EmployeeController);
     });
     it('defined', () => {
         expect(controller).toBeDefined();
