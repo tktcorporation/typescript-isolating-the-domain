@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EmployeeRepository } from 'src/application/repository/EmployeeRepository';
-import { inject, injectable } from 'tsyringe';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
 import { Employee } from 'src/domain/model/employee/Employee';
 import { MailAddressToChange } from 'src/domain/model/employee/MailAddressToChange';

@@ -6,7 +6,6 @@ import {
     ConnectionOptions,
     QueryRunner,
 } from 'typeorm';
-import { singleton } from 'tsyringe';
 import { AsyncMethodDecorator } from 'type-async-decorator';
 
 @singleton()
