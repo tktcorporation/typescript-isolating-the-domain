@@ -21,10 +21,22 @@ describe('Employee', () => {
             .send({
                 name: 'tkt',
                 mail_address: 'tktcorporation.go@gmail.com',
-                phone_number: '000-0000-0000',
+                phone_number: '090-1123-5600',
             })
             .expect(201);
         expect(res.body).toBeDefined();
         expect(res.body.employee_number).toBeGreaterThan(0);
+    });
+    it('bad request', async () => {
+        const res = await request(app.getHttpServer())
+            .post('/employees')
+            .send({
+                name: 'tkt',
+                mail_address: 'tktcorporation.go@gmail.com',
+                phone_number: '000-0000-0000',
+            })
+            .expect(400);
+        expect(res.body).toBeDefined();
+        expect(res.body.error).toBe('Bad Request');
     });
 });
