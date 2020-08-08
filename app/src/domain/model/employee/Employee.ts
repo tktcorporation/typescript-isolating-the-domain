@@ -40,7 +40,7 @@ export class Employee {
         return this._mailAddress;
     }
 
-    toString(): String {
+    toString(): string {
         return (
             'Employee{' +
             'employeeNumber=' +

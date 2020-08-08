@@ -4,7 +4,8 @@
 export class EmployeeNumber {
     private _value: number;
 
-    static from = (value: string) => new EmployeeNumber(Number.parseInt(value));
+    static from = (value: string): EmployeeNumber =>
+        new EmployeeNumber(Number.parseInt(value));
 
     constructor(value: number) {
         this._value = value;
