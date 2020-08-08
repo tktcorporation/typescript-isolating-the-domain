@@ -11,7 +11,9 @@ export class EmployeeController {
     ) {}
 
     @Post()
-    async register(@Body() body: EmployeeRegisterBody): EmployeeNumberResponse {
+    async register(
+        @Body() body: EmployeeRegisterBody,
+    ): Promise<EmployeeNumberResponse> {
         const employeeNumber = await this.recordCoordinator.register(
             body.toDomain(),
         );
