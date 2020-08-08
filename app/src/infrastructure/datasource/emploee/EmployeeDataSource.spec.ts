@@ -2,18 +2,22 @@ import 'reflect-metadata';
 import { DBConnection } from 'src/component/database/dbconnection/dbconnection';
 import { EmployeeDao } from './EmployeeDao';
 import { EmployeeDataSource } from './EmployeeDataSource';
-import { container } from 'tsyringe';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
-
-container.register('ConnectionManager', { useClass: DBConnection });
-container.register('EmployeeMapper', { useClass: EmployeeDao });
-container.register('EmployeeRepository', { useClass: EmployeeDataSource });
+import { Test, TestingModule } from '@nestjs/testing';
 
 describe('EmployeeDataSource', () => {
+    let module: TestingModule;
     let datasource: EmployeeDataSource;
     beforeAll(async () => {
         await DBConnection.startTransaction();
-        datasource = container.resolve(EmployeeDataSource);
+        module = await Test.createTestingModule({
+            providers: [
+                { provide: 'ConnectionManager', useClass: DBConnection },
+                { provide: 'EmployeeMapper', useClass: EmployeeDao },
+                EmployeeDataSource,
+            ],
+        }).compile();
+        datasource = module.get(EmployeeDataSource);
     });
     it('choose', async () => {
         const employeeNumber = await datasource.registerNew();

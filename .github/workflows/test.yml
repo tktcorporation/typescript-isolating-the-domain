@@ -28,5 +28,11 @@ jobs:
       - name: Up a db container
         run: docker-compose up -d
 
+      - name: Install
+        run: docker-compose run --rm app /bin/bash -c "yarn"
+
+      - name: Migration
+        run: docker-compose run --rm app /bin/bash -c "yarn migration:run"
+
       - name: Test
-        run: docker-compose run --rm app "yarn && yarn test"
+        run: docker-compose run --rm app /bin/bash -c "yarn test"

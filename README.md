@@ -6,7 +6,7 @@
 # Environments
 
 - Typescript
-- TSyringe (for DI)
+- NestJS
 - TypeORM (for handling RBD)
 
 # Setup

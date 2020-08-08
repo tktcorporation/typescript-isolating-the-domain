@@ -6,11 +6,11 @@ import { Name } from 'src/domain/model/employee/Name';
 import { MailAddress } from 'src/domain/model/employee/MailAddress';
 import { PhoneNumber } from 'src/domain/model/employee/PhoneNumber';
 import { ContractingEmployees } from 'src/domain/model/employee/ContractingEmployees';
-import { injectable, inject } from 'tsyringe';
+import { Inject, Injectable } from '@nestjs/common';
 
-@injectable()
+@Injectable()
 export class EmployeeDataSource implements EmployeeRepository {
-    constructor(@inject('EmployeeMapper') private mapper: EmployeeMapper) {}
+    constructor(@Inject('EmployeeMapper') private mapper: EmployeeMapper) {}
 
     choose = (employeeNumber: EmployeeNumber): Promise<Employee | undefined> =>
         this.mapper.selectByEmployeeNumber(employeeNumber);
