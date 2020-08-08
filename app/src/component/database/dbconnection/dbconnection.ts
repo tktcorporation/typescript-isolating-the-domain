@@ -7,8 +7,9 @@ import {
     QueryRunner,
 } from 'typeorm';
 import { AsyncMethodDecorator } from 'type-async-decorator';
+import { Injectable, Scope } from '@nestjs/common';
 
-@singleton()
+@Injectable({ scope: Scope.DEFAULT })
 export class DBConnection {
     manager = () => DBConnection.getManager();
     connection = () => DBConnection.get();
