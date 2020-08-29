@@ -4,20 +4,24 @@ import { EmployeeDao } from './EmployeeDao';
 import { EmployeeDataSource } from './EmployeeDataSource';
 import { EmployeeNumber } from 'src/domain/model/employee/EmployeeNumber';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Logger } from '@nestjs/common';
 
 describe('EmployeeDataSource', () => {
-    let module: TestingModule;
     let datasource: EmployeeDataSource;
     beforeAll(async () => {
         await DBConnection.startTransaction();
-        module = await Test.createTestingModule({
+        const module: TestingModule = await Test.createTestingModule({
             providers: [
                 { provide: 'ConnectionManager', useClass: DBConnection },
                 { provide: 'EmployeeMapper', useClass: EmployeeDao },
-                EmployeeDataSource,
+                { provide: 'EmployeeRepository', useClass: EmployeeDataSource },
             ],
         }).compile();
-        datasource = module.get(EmployeeDataSource);
+        datasource = module.get<EmployeeDataSource>('EmployeeRepository');
+    });
+    it('defined', () => {
+        expect(datasource).toBeDefined();
+        Logger.debug(datasource);
     });
     it('choose', async () => {
         const employeeNumber = await datasource.registerNew();

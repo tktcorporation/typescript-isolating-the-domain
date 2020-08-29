@@ -4,6 +4,7 @@ import { EmployeeRecordService } from './EmployeeRecordService';
 import { EmployeeDao } from 'src/infrastructure/datasource/emploee/EmployeeDao';
 import { EmployeeDataSource } from 'src/infrastructure/datasource/emploee/EmployeeDataSource';
 import { Test, TestingModule } from '@nestjs/testing';
+import { EmployeeRecordCoordinator } from 'src/application/coordinator/EmployeeRecordCoordinator';
 
 describe('EmployeeRepository', () => {
     let module: TestingModule;
@@ -11,10 +12,11 @@ describe('EmployeeRepository', () => {
     beforeAll(async () => {
         module = await Test.createTestingModule({
             providers: [
+                EmployeeRecordService,
+                EmployeeRecordCoordinator,
                 { provide: 'ConnectionManager', useClass: DBConnection },
                 { provide: 'EmployeeMapper', useClass: EmployeeDao },
                 { provide: 'EmployeeRepository', useClass: EmployeeDataSource },
-                EmployeeRecordService,
             ],
         }).compile();
         service = module.get(EmployeeRecordService);
