@@ -36,7 +36,11 @@ describe('Employee', () => {
                 phone_number: '000-0000-0000',
             })
             .expect(400);
+        const body: { error: string; message: string } = res.body;
         expect(res.body).toBeDefined();
-        expect(res.body.error).toBe('Bad Request');
+        expect(body.error).toBe('Bad Request');
+        expect(body.message).toStrictEqual([
+            'phone_number must be a valid phone number',
+        ]);
     });
 });

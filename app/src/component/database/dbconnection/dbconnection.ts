@@ -9,7 +9,7 @@ import {
 import { AsyncMethodDecorator } from 'type-async-decorator';
 import { Injectable, Scope } from '@nestjs/common';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable({ scope: Scope.DEFAULT })
 export class DBConnection {
     manager = () => DBConnection.getManager();
     connection = () => DBConnection.get();
